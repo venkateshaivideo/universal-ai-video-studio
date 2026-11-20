@@ -1,82 +1,178 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Universal AI Video Studio</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: white;
-      text-align: center;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding: 60px 20px;
-    }
-
-    h1 {
-      font-size: 42px;
-      margin-bottom: 15px;
-    }
-
-    p {
-      font-size: 18px;
-      color: #cbd5e1;
-    }
-
-    .card {
-      margin-top: 40px;
-      padding: 30px;
-      background: #1e293b;
-      border-radius: 16px;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 14px 28px;
-      border: none;
-      border-radius: 10px;
-      background: #2563eb;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #1d4ed8;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Universal AI Video Studio</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#07111f;color:#fff}
+header{padding:22px 6%;border-bottom:1px solid #243247;background:#0b1728}
+.logo{font-size:24px;font-weight:bold}
+.logo span{color:#38bdf8}
+.wrap{max-width:1100px;margin:auto;padding:35px 20px}
+.hero{text-align:center;margin-bottom:30px}
+.hero h1{font-size:42px;margin:10px 0}
+.hero p{color:#a9b7c8;font-size:18px}
+.card{background:#101d30;border:1px solid #263750;border-radius:18px;padding:25px;margin-bottom:20px}
+label{display:block;margin:15px 0 8px;font-weight:bold}
+textarea,input,select{width:100%;padding:14px;border-radius:10px;border:1px solid #34465f;background:#091525;color:#fff;font-size:16px}
+textarea{min-height:130px;resize:vertical}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+button{border:0;border-radius:10px;padding:14px 20px;font-size:16px;font-weight:bold;cursor:pointer}
+.primary{background:#2563eb;color:white;width:100%;margin-top:20px}
+.secondary{background:#1e293b;color:white;margin-right:8px}
+button:hover{opacity:.88}
+.progress{height:10px;background:#263449;border-radius:10px;overflow:hidden;margin-top:15px}
+.bar{height:100%;width:0;background:#38bdf8;transition:width .4s}
+.scene{background:#0b1728;border:1px solid #263750;border-radius:12px;padding:15px;margin:10px 0}
+.scene h3{margin:0 0 7px;color:#38bdf8}
+.hidden{display:none}
+.status{color:#9fb0c4;margin-top:12px}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.hero h1{font-size:31px}}
+</style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>🎬 Universal AI Video Studio</h1>
 
-    <p>
-      Create videos with AI — simple, powerful and free-first.
-    </p>
+<header>
+<div class="logo">🎬 Universal <span>AI Video Studio</span></div>
+</header>
 
-    <div class="card">
-      <h2>AI Video Studio</h2>
-      <p>
-        Your universal AI-powered video creation platform.
-      </p>
+<div class="wrap">
 
-      <button onclick="startStudio()">
-        Start Creating
-      </button>
-    </div>
-  </div>
+<section class="hero">
+<h1>Create Your AI Video</h1>
+<p>Plan and build 5–10 minute videos from one simple studio.</p>
+</section>
 
-  <script>
-    function startStudio() {
-      alert("Universal AI Video Studio is starting!");
-    }
-  </script>
+<div class="card">
+<label>Video idea / topic</label>
+<textarea id="idea" placeholder="Example: Explain artificial intelligence to beginners in a simple and interesting way..."></textarea>
+
+<div class="grid">
+<div>
+<label>Duration</label>
+<select id="duration">
+<option>5 minutes</option>
+<option>7 minutes</option>
+<option>10 minutes</option>
+</select>
+</div>
+
+<div>
+<label>Aspect Ratio</label>
+<select id="ratio">
+<option>16:9 Landscape</option>
+<option>9:16 Shorts</option>
+<option>1:1 Square</option>
+</select>
+</div>
+
+<div>
+<label>Visual Style</label>
+<select id="style">
+<option>Cinematic</option>
+<option>Realistic</option>
+<option>Documentary</option>
+<option>Animated</option>
+<option>Minimal</option>
+</select>
+</div>
+</div>
+
+<label>Narration</label>
+<select id="voice">
+<option>Professional</option>
+<option>Friendly</option>
+<option>Documentary</option>
+<option>Energetic</option>
+</select>
+
+<button class="primary" onclick="generateStoryboard()">✨ Generate Storyboard</button>
+
+<div id="status" class="status"></div>
+<div class="progress"><div id="bar" class="bar"></div></div>
+</div>
+
+<div id="result" class="card hidden">
+<h2>🎞️ Storyboard</h2>
+<div id="scenes"></div>
+
+<button class="secondary" onclick="saveProject()">💾 Save Project</button>
+<button class="secondary" onclick="clearProject()">🗑️ Clear</button>
+</div>
+
+</div>
+
+<script>
+function generateStoryboard(){
+const idea=document.getElementById("idea").value.trim();
+if(!idea){
+alert("Please enter your video idea first.");
+return;
+}
+
+const bar=document.getElementById("bar");
+const status=document.getElementById("status");
+const result=document.getElementById("result");
+const scenes=document.getElementById("scenes");
+
+result.classList.remove("hidden");
+scenes.innerHTML="";
+bar.style.width="0%";
+status.textContent="Creating your storyboard...";
+
+let progress=0;
+
+const timer=setInterval(()=>{
+progress+=20;
+bar.style.width=progress+"%";
+
+if(progress>=100){
+clearInterval(timer);
+status.textContent="Storyboard ready!";
+
+const parts=[
+["1. Hook","Start with a powerful question or surprising statement about "+idea+"."],
+["2. Introduction","Introduce the topic and explain why it matters."],
+["3. Main Concept","Explain the core idea in simple language."],
+["4. Visual Example","Show an easy-to-understand real-world example."],
+["5. Deep Dive","Explore the important details and useful insights."],
+["6. Practical Takeaway","Explain how viewers can use this knowledge."],
+["7. Summary","Summarize the most important points."],
+["8. Ending","Finish with a memorable conclusion and call to action."]
+];
+
+parts.forEach(p=>{
+const div=document.createElement("div");
+div.className="scene";
+div.innerHTML="<h3>"+p[0]+"</h3><p>"+p[1]+"</p>";
+scenes.appendChild(div);
+});
+}
+},300);
+}
+
+function saveProject(){
+const project={
+idea:document.getElementById("idea").value,
+duration:document.getElementById("duration").value,
+ratio:document.getElementById("ratio").value,
+style:document.getElementById("style").value,
+voice:document.getElementById("voice").value
+};
+localStorage.setItem("universalVideoProject",JSON.stringify(project));
+alert("Project saved on this device.");
+}
+
+function clearProject(){
+document.getElementById("idea").value="";
+document.getElementById("result").classList.add("hidden");
+document.getElementById("bar").style.width="0%";
+document.getElementById("status").textContent="";
+}
+</script>
+
 </body>
 </html>
